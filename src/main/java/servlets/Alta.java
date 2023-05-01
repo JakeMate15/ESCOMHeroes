@@ -7,14 +7,17 @@ package servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.*;
 
 /**
  *
  * @author erikm
  */
+@WebServlet(name = "Alta", urlPatterns = {"/Alta"})
 public class Alta extends HttpServlet {
 
     /**
@@ -26,22 +29,53 @@ public class Alta extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Alta</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet Alta at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    String nombre = request.getParameter("nombre");
+    String apellido = request.getParameter("apellido");
+    String nombre_usuario = request.getParameter("nombre_usuario");
+    String contrasenia = request.getParameter("contrasenia");
+    String correo_electronico = request.getParameter("correo_electronico");
+
+    Connection conexion = null;
+    PreparedStatement consulta = null;
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/escomheroes","root","root");
+        consulta = conexion.prepareStatement("INSERT INTO jugadores (nombre, apellido, nombre_usuario, contrasenia, correo_electronico) VALUES (?, ?, ?, ?, ?)");
+        consulta.setString(1, nombre);
+        consulta.setString(2, apellido);
+        consulta.setString(3, nombre_usuario);
+        consulta.setString(4, contrasenia);
+        consulta.setString(5, correo_electronico);
+        consulta.executeUpdate();
+        
+        // Notificar al usuario del éxito del alta
+        request.setAttribute("mensaje", "¡Alta realizada con éxito!");
+
+        // Redirigir al usuario a la página inicial
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/");
+        dispatcher.forward(request, response);
+
+    } catch (ClassNotFoundException | SQLException e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (consulta != null) {
+                consulta.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+}
+
+
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
