@@ -7,11 +7,13 @@ package servlets;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.lang.Thread;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.RequestDispatcher;
 
 /**
  *
@@ -36,6 +38,9 @@ public class Registro extends HttpServlet {
                 String apellidoR = request.getParameter("apellidoRegistro");
                 String usuarioR = request.getParameter("usuarioRegistro");
                 String contraR = request.getParameter("contraRegistro");
+                String usuarioE = request.getParameter("usuario_eliminar");
+                String contraE = request.getParameter("contrasena_eliminar");
+                RequestDispatcher redireccion = request.getRequestDispatcher("ESCOMHeroes.html");
                 
                 
                 out.println("<!DOCTYPE html>");
@@ -71,6 +76,19 @@ public class Registro extends HttpServlet {
                 */
                 
                 //out.println(": " + () + "<br>");
+                
+                out.println("<form>");
+                out.println("<label for=\"nombre\">Nombre:</label>");
+                out.println("<input type=\"text\" id=\"nombreRegistro\" name=\"nombreRegistro\" required><br>");
+                out.println("<label for=\"apellido\">Apellido:</label>");
+                out.println("<input type=\"text\" id=\"apellidoRegistro\" name=\"apellidoRegistro\" required><br>");
+                out.println("<label for=\"usuario\">Usuario:</label>");
+                out.println("<input type=\"text\" id=\"usuarioRegistro\" name=\"usuarioRegistro\" required><br>");
+                out.println("<label for=\"contrasena\">Contraseña:</label>");
+                out.println("<input type=\"text\" id=\"contraRegistro\" name=\"contraRegistro\" required><br>");
+                out.println("<input type=\"submit\" value=\"Registrarse\">");
+                out.println("</form>");
+                
                 if(nombreR!=null && apellidoR!=null && usuarioR!=null && contraR!=null){
                     //Iny sql
                     String consultaSql = "SELECT * FROM jugadores WHERE nombre_usuario=?";
@@ -88,28 +106,26 @@ public class Registro extends HttpServlet {
                             consulta.setString(4, contraR);
                             consulta.setString(5, "1");
                             consulta.setString(6, "0");
+
                             consulta.executeUpdate();
+                            out.println("Usuario agregado correctamente");
+
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            redireccion.forward(request, response);
                         }
                         else{
                             out.println("Usuario no disponible");
                         }
                     }
                     else{
-                        out.println("Caracteres no validos");
+                        out.println("Valores no validos");
                     }
                 }
-                
-                out.println("<form>");
-                out.println("<label for=\"nombre\">Nombre:</label>");
-                out.println("<input type=\"text\" id=\"nombreRegistro\" name=\"nombreRegistro\" required><br>");
-                out.println("<label for=\"apellido\">Apellido:</label>");
-                out.println("<input type=\"text\" id=\"apellidoRegistro\" name=\"apellidoRegistro\" required><br>");
-                out.println("<label for=\"usuario\">Usuario:</label>");
-                out.println("<input type=\"text\" id=\"usuarioRegistro\" name=\"usuarioRegistro\" required><br>");
-                out.println("<label for=\"contrasena\">Contraseña:</label>");
-                out.println("<input type=\"text\" id=\"contraRegistro\" name=\"contraRegistro\" required><br>");
-                out.println("<input type=\"submit\" value=\"Registrarse\">");
-                out.println("</form>");
+
                 out.println("<h2>Eliminación de usuario</h2>");
                 out.println("<form>");
                 out.println("<label for=\"usuario_eliminar\">Usuario:</label>");
@@ -118,6 +134,43 @@ public class Registro extends HttpServlet {
                 out.println("<input type=\"password\" id=\"contrasena_eliminar\" name=\"contrasena_eliminar\" required><br>");
                 out.println("<input type=\"submit\" value=\"Eliminar cuenta\">");
                 out.println("</form>");
+
+
+                if(usuarioE != null && contraE!=null){
+                    //Iny sql
+                    String consultaSql = "SELECT id_jugador FROM jugadores WHERE nombre_usuario=? AND contrasenia=?";
+                    consulta = conexion.prepareStatement(consultaSql);
+                    consulta.setString(1, usuarioE);
+                    consulta.setString(2, contraE);
+                    tabla = consulta.executeQuery();
+
+                    if(consulta.execute()){
+                        tabla = consulta.executeQuery();
+                        if(!tabla.next()){
+                            out.println("Datos no validos");
+                        }
+                        else{
+                            String id = tabla.getString("id_jugador");
+                            consultaSql = "DELETE FROM jugadores WHERE id_jugador=?";
+                            consulta = conexion.prepareStatement(consultaSql);
+                            consulta.setString(1, id);
+
+                            consulta.executeUpdate();
+                            out.println("Usuario Eliminado");
+                            
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            redireccion.forward(request, response);
+                        }
+                    }
+                    else{
+                        out.println("Valores no validos");
+                    }
+                }
+
                 out.println("</section>");
                 out.println("</main>");
                 out.println("<footer>");
