@@ -1,77 +1,85 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package servlets;
 
 import java.io.*;
 import java.sql.*;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author erikm
- */
+
 @WebServlet(name = "Ranking", urlPatterns = {"/Ranking"})
 public class Ranking extends HttpServlet {
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException{
         response.setContentType("text/html;charset=UTF-8");
         Connection conexion = null;
         Statement consulta = null;
         ResultSet tabla = null;
+        
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/escomheroes","root","root");
             consulta = conexion.createStatement();
-            tabla = consulta.executeQuery("SELECT * FROM jugadores");
+            tabla = consulta.executeQuery("SELECT * FROM jugadores ORDER BY nivel DESC");
+            
             try (PrintWriter out = response.getWriter()) {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<title>Lista de jugadores</title>");
+                out.println("<meta charset=\"UTF-8\">");
+                out.println("<title>ESCOMHeroes - Ranking de Jugadores</title>");
+                out.println("<link rel=\"stylesheet\" href=\"estilos/estilosES.css\">");
                 out.println("</head>");
                 out.println("<body>");
-                out.println("<h1>Lista de jugadores</h1>");
+                out.println("<header>");
+                out.println("<h1>ESCOMHeroes</h1>");
+                out.println("<nav>");
+                out.println("<ul>");
+                out.println("<li><a href=\"ESCOMHeroes.html\">Inicio</a></li>");
+                out.println("<li><a href=\"Registro\">Registro/Eliminar Cuenta</a></li>");
+                out.println("<li><a href=\"Cuenta\">Mi Cuenta</a></li>");
+                out.println("<li><a href=\"Ranking\">Ranking</a></li>");
+                out.println("</ul>");
+                out.println("</nav>");
+                out.println("</header>");
+                out.println("<main>");
+                out.println("<section>");
+                out.println("<h2>Ranking de Jugadores</h2>");
                 out.println("<table>");
+                out.println("<thead>");
                 out.println("<tr>");
-                out.println("<th>ID</th>");
-                out.println("<th>Nombre</th>");
-                out.println("<th>Apellido</th>");
-                out.println("<th>Nombre de usuario</th>");
-                out.println("<th>Puntos de experiencia</th>");
+                out.println("<th>Nombre de Usuario</th>");
                 out.println("<th>Nivel</th>");
-                out.println("<th>Puntuación</th>");
-                out.println("<th>Última fecha de inicio de sesión</th>");
-                out.println("<th>Correo electrónico</th>");
+                out.println("<th>Dinero</th>");
                 out.println("</tr>");
+                out.println("</thead>");
+                out.println("<tbody>");
+                
+                
                 while (tabla.next()) {
                     out.println("<tr>");
-                    out.println("<td>" + tabla.getInt("id_jugador") + "</td>");
-                    out.println("<td>" + tabla.getString("nombre") + "</td>");
-                    out.println("<td>" + tabla.getString("apellido") + "</td>");
                     out.println("<td>" + tabla.getString("nombre_usuario") + "</td>");
-                    out.println("<td>" + tabla.getInt("puntos_experiencia") + "</td>");
-                    out.println("<td>" + tabla.getInt("nivel") + "</td>");
-                    out.println("<td>" + tabla.getInt("puntuacion") + "</td>");
-                    out.println("<td>" + tabla.getDate("ultima_fecha_inicio_sesion") + "</td>");
-                    out.println("<td>" + tabla.getString("correo_electronico") + "</td>");
+                    out.println("<td>" + tabla.getString("nivel") + "</td>");
+                    out.println("<td>" + tabla.getString("dinero") + "</td>");
                     out.println("</tr>");
                 }
+                
+                out.println("</tbody>");
                 out.println("</table>");
+                out.println("</section>");
+                out.println("</main>");
+                out.println("<footer>");
+                out.println("<p>ESCOMHeroes &copy; 2023 - Todos los derechos reservados</p>");
+                out.println("</footer>");
                 out.println("</body>");
                 out.println("</html>");
-                
-                conexion.close();
-                consulta.close();
-                tabla.close();
+
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        }catch (ClassNotFoundException | SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al obtener la lista de jugadores: " + e.getMessage());
         } finally {
             try {
@@ -89,7 +97,7 @@ public class Ranking extends HttpServlet {
             }
         }
     }
-
+    
 
     
 
