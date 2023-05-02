@@ -10,7 +10,15 @@
         <url-pattern>/Ranking</url-pattern>
         <http-method>GET</http-method>
     </servlet-mapping>
-
+    
+    <servlet>
+        <servlet-name>Cuenta</servlet-name>
+        <servlet-class>servlets.Cuenta</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Cuenta</servlet-name>
+        <url-pattern>/Cuenta</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
