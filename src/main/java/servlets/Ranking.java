@@ -77,7 +77,8 @@ public class Ranking extends HttpServlet {
                 out.println("</footer>");
                 out.println("</body>");
                 out.println("</html>");
-
+                
+                conexion.close();
             }
         }catch (ClassNotFoundException | SQLException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al obtener la lista de jugadores: " + e.getMessage());
