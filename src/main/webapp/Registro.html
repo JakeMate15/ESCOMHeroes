@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>ESCOMHeroes</title>
+	<link rel="stylesheet" href="estilos/estilosES.css">
+</head>
+<body>
+	<header>
+		<h1>ESCOMHeroes</h1>
+		<nav>
+			<ul>
+				<li><a href="ESCOMHeroes.html">Inicio</a></li>
+                <li><a href="Registro.html">Registro/Eliminar Cuenta</a></li>
+                <li><a href="Cuenta.html">Mi Cuenta</a></li>
+				<li><a href="Ranking">Ranking</a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<main>
+		<section>
+            <h1>Registro y eliminación de cuenta</h1><br>
+            <p>Ingresa solo letras del alfabeto latin, en caso de ser redirigido a la pagina principal de ESCOM Heroes su operaicon habra sido valida</p>
+            
+            <h2>Registro de usuario</h2>
+            <form action="Registro" method="post">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombreRegistro" name="nombreRegistro" required><br>
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellidoRegistro" name="apellidoRegistro" required><br>
+                <label for="correo">Correo:</label>
+                <input type="text" id="correoRegistro" name="correoRegistro" required><br>
+                <label for="usuario">Usuario:</label>
+                <input type="text" id="usuarioRegistro" name="usuarioRegistro" required><br>
+                <label for="contrasena">Contraseña:</label>
+                <input type="text" id="contraRegistro" name="contraRegistro" required><br>
+                <input type="submit" value="Registrarse">
+            </form>
+
+            <h2>Eliminación de usuario</h2>
+            <form action="Baja" method="post">
+                <label for="usuario_eliminar">Usuario:</label>
+                <input type="text" id="usuario_eliminar" name="usuario_eliminar" required><br>
+                <label for="contrasena_eliminar">Contraseña:</label>
+                <input type="password" id="contrasena_eliminar" name="contrasena_eliminar" required><br>
+                <input type="submit" value="Eliminar cuenta">
+            </form>
+
+        </section>
+	</main>
+
+	<footer>
+		<p>ESCOMHeroes &copy; 2023 - Todos los derechos reservados</p>
+	</footer>
+</body>
+</html>

@@ -4,8 +4,6 @@
  */
 package servlets;
 
-import auxiliares.*;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,12 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import auxiliares.GestionBD;
+import auxiliares.Usuario;
+
 /**
  *
  * @author erikm
  */
-
-public class Registro extends HttpServlet {
+public class Baja extends HttpServlet {
     GestionBD gB;
     
     @Override
@@ -38,33 +38,27 @@ public class Registro extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
 
             try (PrintWriter out = response.getWriter()) {
-                String nombreR = request.getParameter("nombreRegistro");
-                String apellidoR = request.getParameter("apellidoRegistro");
-                String usuarioR = request.getParameter("usuarioRegistro");
-                String contraR = request.getParameter("contraRegistro");
-                String correoR = request.getParameter("correoRegistro");
+                String usuarioE = request.getParameter("usuario_eliminar");
+                String contraE = request.getParameter("contrasena_eliminar");
 
                 Usuario u = new Usuario();
-                u.setNombre(nombreR);
-                u.setApellido(apellidoR);
-                u.setUsuario(usuarioR);
-                u.setContrasena(contraR);
-                u.setCorreo(correoR);
+                u.setUsuario(usuarioE);
+                u.setContrasena(contraE);
 
-                int bandera = gB.alta(u);
+                int bandera = gB.borrar(u);
                 if(bandera>0){
-                    out.print("<p>Usuario Registrado</p>");
-                    request.getRequestDispatcher("ESCOMHeroes.html").include(request, response);  
+                    response.sendRedirect("ESCOMHeroes.html");  
                 }
                 else{
-                    out.println("Pruebe con otro usuario");  
+                    out.println("Datos incorrectos");  
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         System.out.println(e.toString());
                     }
-                    response.sendRedirect("Registro.html");
+                    response.sendRedirect("ESCOMHeroes.html");
                 }
             }
     }
+
 }
